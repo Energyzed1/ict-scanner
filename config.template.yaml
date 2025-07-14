@@ -1,0 +1,111 @@
+data_source:
+  provider: "interactive_brokers"  # Options: interactive_brokers, tradingview, polygon
+  credentials:
+    # Interactive Brokers settings
+    ib_host: "127.0.0.1"
+    ib_port: 7497  # 7496 for TWS, 7497 for IB Gateway
+    ib_client_id: 1
+    
+    # Polygon.io settings
+    polygon_api_key: "YOUR_POLYGON_API_KEY"
+    
+    # TradingView settings
+    tradingview_username: "YOUR_TV_USERNAME"
+    tradingview_password: "YOUR_TV_PASSWORD"
+
+instruments:
+  - symbol: "MES"
+    exchange: "CME"
+    contract_month: "current"
+    timeframes: ["5m", "15m", "30m", "1h"]
+    
+  - symbol: "MNQ"
+    exchange: "CME"
+    contract_month: "current"
+    timeframes: ["5m", "15m", "30m", "1h"]
+
+patterns:
+  fvg:
+    enabled: true
+    min_gap_size: 0.25  # Minimum size of gap in points
+    max_age_hours: 48   # How long to track FVGs
+    
+  order_block:
+    enabled: true
+    min_size: 0.5      # Minimum candle size in points
+    max_age_hours: 72
+    
+  market_structure:
+    enabled: true
+    swing_lookback: 5   # Number of candles to identify swings
+    
+  smt_divergence:
+    enabled: true
+    correlation_window: 20  # Candles to check correlation
+    divergence_threshold: 0.7
+
+alerts:
+  discord:
+    enabled: true
+    webhook_url: "YOUR_DISCORD_WEBHOOK_URL"
+    
+  telegram:
+    enabled: true
+    bot_token: "YOUR_BOT_TOKEN"
+    chat_id: "YOUR_CHAT_ID"
+    
+  email:
+    enabled: false
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    username: "YOUR_EMAIL"
+    password: "YOUR_APP_PASSWORD"
+    recipients: ["alerts@example.com"]
+    
+  sms:
+    enabled: false
+    twilio_sid: "YOUR_TWILIO_SID"
+    twilio_token: "YOUR_TWILIO_TOKEN"
+    from_number: "+1234567890"
+    to_numbers: ["+1234567890"]
+
+preferences:
+  max_alerts_per_hour: 20
+  quiet_hours: ["22:00", "06:00"]
+  timezone: "America/New_York"
+  minimum_priority: "medium"  # low, medium, high
+  
+  session_filters:
+    asia: 
+      enabled: false
+      hours: ["19:00", "03:00"]
+    london:
+      enabled: true
+      hours: ["03:00", "11:30"]
+    ny:
+      enabled: true
+      hours: ["08:00", "17:00"]
+
+database:
+  development:
+    type: "sqlite"
+    path: "data/scanner.db"
+    
+  production:
+    type: "postgresql"
+    host: "localhost"
+    port: 5432
+    database: "ict_scanner"
+    username: "YOUR_DB_USER"
+    password: "YOUR_DB_PASSWORD"
+
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "logs/scanner.log"
+  max_size_mb: 100
+  backup_count: 5
+  
+performance:
+  max_patterns_per_instrument: 100
+  cleanup_interval_minutes: 30
+  cache_expiry_minutes: 15 
