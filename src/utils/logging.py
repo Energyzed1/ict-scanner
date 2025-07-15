@@ -40,7 +40,7 @@ def setup_logging(config: Dict[str, Any]) -> None:
         colorize=True
     )
     
-    # Add file handler
+    # Add file handler with proper rotation
     logger.add(
         log_file,
         format=(
@@ -50,7 +50,7 @@ def setup_logging(config: Dict[str, Any]) -> None:
             "{message}"
         ),
         level=log_level,
-        rotation=f"{max_size} bytes",
+        rotation="100 MB",  # Rotate when file reaches 100 MB
         retention=backup_count,
         compression="zip"
     )
